@@ -37,10 +37,26 @@ const dummyProjects = [
   },
   {
     title: "Royal Frames",
-    description: "Web Application",
+    description: "CA Website",
     tech: ["Express"],
     link: "https://royalframes.onrender.com/",
     image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2000&auto=format&fit=crop",
+    category: "Web/Apps",
+  },
+  {
+    title: "SN Spices",
+    description: "Web Application",
+    tech: ["React"],
+    link: "https://snspicesrajukpta.page.gd/",
+    image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=2000&auto=format&fit=crop",
+    category: "Web/Apps",
+  },
+  {
+    title: "Sri Durga Customisations",
+    description: "Web Application",
+    tech: ["React"],
+    link: "https://sridurgacustomisations.is-best.net/",
+    image: "https://images.unsplash.com/photo-1600132806378-62402124d9e0?q=80&w=2000&auto=format&fit=crop",
     category: "Web/Apps",
   },
   {

@@ -276,7 +276,7 @@ const Contact = () => {
             <span className="dark:text-white text-slate-800">TOUCH</span>
           </h2>
           <p className="text-xl dark:text-slate-400 text-slate-600 font-cascadia">
-            Mari berkolaborasi dan ciptakan sesuatu yang amazing!
+            Let's collaborate and create something amazing!
           </p>
 
           {/* Admin Button - positioned top right */}
