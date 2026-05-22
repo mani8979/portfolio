@@ -111,59 +111,7 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
         <RigidBody position={[1.5, 0, 0]} ref={j3} {...segmentProps}>
           <BallCollider args={[0.1]} />
         </RigidBody>
-        <RigidBody position={[2, 0, 0]} ref={card} {...segmentProps} type={dragged ? 'kinematicPosition' : 'dynamic'}>
           <CuboidCollider args={[0.8, 1.125, 0.01]} />
-          
-          <Html 
-            transform 
-            position={[0, 0.1, 0.011]} 
-            rotation={[0, 0, 0]} 
-            scale={0.068} 
-            zIndexRange={[100, 0]}
-            occlude="blending"
-            pointerEvents="none"
-          >
-            <div className="w-[240px] h-[340px] bg-[#0c0c0c] rounded-xl flex flex-col items-center justify-between p-4 overflow-hidden relative shadow-2xl border border-gray-800">
-               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#00ffdc10] to-transparent pointer-events-none" />
-               <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-cyan-500/20 blur-3xl rounded-full" />
-               
-               <div className="w-full flex justify-start items-center gap-2 mb-2 z-10">
-                  <div className="w-6 h-6 bg-[#00ffdc] rounded flex items-center justify-center font-black text-black text-xs">M</div>
-                  <span className="text-white text-xs font-bold tracking-widest">PORTFOLIO</span>
-               </div>
-
-               <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-[#00ffdc] z-10 shadow-[0_0_15px_rgba(0,255,220,0.4)]">
-                  <img src={maniImg} alt="Mani Babu" className="w-full h-full object-cover" />
-               </div>
-
-               <div className="absolute right-0 top-1/2 -translate-y-1/2 rotate-90 opacity-10 pointer-events-none z-0">
-                  <span className="text-5xl font-black text-white tracking-widest uppercase">MANI</span>
-               </div>
-
-               <div className="w-full bg-white rounded-lg p-3 text-center z-10 mt-4 shadow-lg flex flex-col items-center">
-                  <h2 className="text-black font-black text-sm uppercase tracking-wide">Kalla Mani Babu</h2>
-                  <div className="bg-black text-[#00ffdc] text-[10px] py-1 px-2 rounded-full mt-1 font-bold inline-block">
-                     FULL STACK DEV
-                  </div>
-               </div>
-            </div>
-          </Html>
-
-          <Html 
-            transform 
-            position={[0, 0.1, -0.011]} 
-            rotation={[0, Math.PI, 0]} 
-            scale={0.068} 
-            zIndexRange={[100, 0]}
-            occlude="blending"
-            pointerEvents="none"
-          >
-            <div className="w-[240px] h-[340px] bg-[#0c0c0c] rounded-xl flex flex-col items-center justify-center p-4 overflow-hidden relative shadow-2xl border border-gray-800">
-               <div className="w-12 h-12 bg-[#00ffdc] rounded flex items-center justify-center font-black text-black text-2xl mb-4">M</div>
-               <span className="text-white text-lg font-bold tracking-widest">PORTFOLIO</span>
-               <span className="text-gray-500 text-xs mt-2 text-center">kallamanibabu.me</span>
-            </div>
-          </Html>
           <group
             scale={2.25}
             position={[0, -1.2, -0.05]}
@@ -173,6 +121,67 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
             onPointerDown={(e) => (e.target.setPointerCapture(e.pointerId), drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation()))))}>
             <mesh geometry={nodes.card.geometry}>
               <meshPhysicalMaterial color="#111111" clearcoat={1} clearcoatRoughness={0.15} roughness={0.9} metalness={0.8} />
+              
+              {/* Front of ID Card */}
+              <Html 
+                transform 
+                position={[0, 0, 0.011]} 
+                rotation={[0, 0, 0]} 
+                scale={0.015} 
+                zIndexRange={[100, 0]}
+                pointerEvents="none"
+              >
+                <div style={{ width: '220px', height: '330px', backgroundColor: '#0c0c0c', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', padding: '16px', overflow: 'hidden', position: 'relative', border: '1px solid #1f2937' }}>
+                   
+                   <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '8px', zIndex: 10 }}>
+                      <div style={{ width: '24px', height: '24px', backgroundColor: '#00ffdc', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'black', fontWeight: 'bold', fontSize: '12px' }}>M</div>
+                      <span style={{ color: 'white', fontSize: '12px', fontWeight: 'bold', letterSpacing: '2px' }}>PORTFOLIO</span>
+                   </div>
+
+                   <div style={{ width: '120px', height: '120px', borderRadius: '50%', overflow: 'hidden', border: '3px solid #00ffdc', zIndex: 10, boxShadow: '0 0 20px rgba(0,255,220,0.5)' }}>
+                      <img src={maniImg} alt="Mani Babu" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                   </div>
+
+                   <div style={{ width: '100%', backgroundColor: 'white', borderRadius: '8px', padding: '12px', textAlign: 'center', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <h2 style={{ color: 'black', fontWeight: '900', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>Kalla Mani Babu</h2>
+                      <div style={{ backgroundColor: 'black', color: '#00ffdc', fontSize: '10px', padding: '4px 8px', borderRadius: '9999px', marginTop: '6px', fontWeight: 'bold' }}>
+                         FULL STACK DEV
+                      </div>
+                   </div>
+
+                   {/* Vertical text */}
+                   <div style={{ position: 'absolute', right: '-20px', top: '50%', transform: 'translateY(-50%) rotate(90deg)', opacity: 0.1, zIndex: 0 }}>
+                      <span style={{ fontSize: '48px', fontWeight: '900', color: 'white', letterSpacing: '4px' }}>MANI</span>
+                   </div>
+                </div>
+              </Html>
+
+              {/* Back of ID Card */}
+              <Html 
+                transform 
+                position={[0, 0, -0.011]} 
+                rotation={[0, Math.PI, 0]} 
+                scale={0.015} 
+                zIndexRange={[100, 0]}
+                pointerEvents="none"
+              >
+                <div style={{ width: '220px', height: '330px', backgroundColor: '#0c0c0c', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px', overflow: 'hidden', border: '1px solid #1f2937' }}>
+                   <div style={{ width: '48px', height: '48px', backgroundColor: '#00ffdc', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'black', fontWeight: '900', fontSize: '24px', marginBottom: '16px' }}>M</div>
+                   <span style={{ color: 'white', fontSize: '18px', fontWeight: 'bold', letterSpacing: '2px' }}>PORTFOLIO</span>
+                   <span style={{ color: '#6b7280', fontSize: '12px', marginTop: '8px' }}>kallamanibabu.me</span>
+                   
+                   <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #333', paddingBottom: '4px' }}>
+                       <span style={{ color: '#9ca3af', fontSize: '10px' }}>EXPERIENCE</span>
+                       <span style={{ color: 'white', fontSize: '10px', fontWeight: 'bold' }}>2+ YEARS</span>
+                     </div>
+                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #333', paddingBottom: '4px' }}>
+                       <span style={{ color: '#9ca3af', fontSize: '10px' }}>PROJECTS</span>
+                       <span style={{ color: 'white', fontSize: '10px', fontWeight: 'bold' }}>4+ COMPLETED</span>
+                     </div>
+                   </div>
+                </div>
+              </Html>
             </mesh>
             <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
             <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
