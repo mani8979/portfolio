@@ -120,69 +120,7 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
             onPointerOut={() => hover(false)}
             onPointerUp={(e) => (e.target.releasePointerCapture(e.pointerId), drag(false))}
             onPointerDown={(e) => (e.target.setPointerCapture(e.pointerId), drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation()))))}>
-            <mesh geometry={nodes.card.geometry}>
-              <meshPhysicalMaterial color="#111111" clearcoat={1} clearcoatRoughness={0.15} roughness={0.9} metalness={0.8} />
-              
-              {/* Front of ID Card */}
-              <Html 
-                transform 
-                position={[0, 0, 0.011]} 
-                rotation={[0, 0, 0]} 
-                scale={0.015} 
-                zIndexRange={[100, 0]}
-                pointerEvents="none"
-              >
-                <div style={{ width: '220px', height: '330px', backgroundColor: '#0c0c0c', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', padding: '16px', overflow: 'hidden', position: 'relative', border: '1px solid #1f2937' }}>
-                   
-                   <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '8px', zIndex: 10 }}>
-                      <div style={{ width: '24px', height: '24px', backgroundColor: '#00ffdc', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'black', fontWeight: 'bold', fontSize: '12px' }}>M</div>
-                      <span style={{ color: 'white', fontSize: '12px', fontWeight: 'bold', letterSpacing: '2px' }}>PORTFOLIO</span>
-                   </div>
-
-                   <div style={{ width: '120px', height: '120px', borderRadius: '50%', overflow: 'hidden', border: '3px solid #00ffdc', zIndex: 10, boxShadow: '0 0 20px rgba(0,255,220,0.5)' }}>
-                      <img src={maniImg} alt="Mani Babu" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                   </div>
-
-                   <div style={{ width: '100%', backgroundColor: 'white', borderRadius: '8px', padding: '12px', textAlign: 'center', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <h2 style={{ color: 'black', fontWeight: '900', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>Kalla Mani Babu</h2>
-                      <div style={{ backgroundColor: 'black', color: '#00ffdc', fontSize: '10px', padding: '4px 8px', borderRadius: '9999px', marginTop: '6px', fontWeight: 'bold' }}>
-                         FULL STACK DEV
-                      </div>
-                   </div>
-
-                   {/* Vertical text */}
-                   <div style={{ position: 'absolute', right: '-20px', top: '50%', transform: 'translateY(-50%) rotate(90deg)', opacity: 0.1, zIndex: 0 }}>
-                      <span style={{ fontSize: '48px', fontWeight: '900', color: 'white', letterSpacing: '4px' }}>MANI</span>
-                   </div>
-                </div>
-              </Html>
-
-              {/* Back of ID Card */}
-              <Html 
-                transform 
-                position={[0, 0, -0.011]} 
-                rotation={[0, Math.PI, 0]} 
-                scale={0.015} 
-                zIndexRange={[100, 0]}
-                pointerEvents="none"
-              >
-                <div style={{ width: '220px', height: '330px', backgroundColor: '#0c0c0c', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px', overflow: 'hidden', border: '1px solid #1f2937' }}>
-                   <div style={{ width: '48px', height: '48px', backgroundColor: '#00ffdc', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'black', fontWeight: '900', fontSize: '24px', marginBottom: '16px' }}>M</div>
-                   <span style={{ color: 'white', fontSize: '18px', fontWeight: 'bold', letterSpacing: '2px' }}>PORTFOLIO</span>
-                   <span style={{ color: '#6b7280', fontSize: '12px', marginTop: '8px' }}>kallamanibabu.me</span>
-                   
-                   <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #333', paddingBottom: '4px' }}>
-                       <span style={{ color: '#9ca3af', fontSize: '10px' }}>EXPERIENCE</span>
-                       <span style={{ color: 'white', fontSize: '10px', fontWeight: 'bold' }}>2+ YEARS</span>
-                     </div>
-                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #333', paddingBottom: '4px' }}>
-                       <span style={{ color: '#9ca3af', fontSize: '10px' }}>PROJECTS</span>
-                       <span style={{ color: 'white', fontSize: '10px', fontWeight: 'bold' }}>4+ COMPLETED</span>
-                     </div>
-                   </div>
-                </div>
-              </Html>
+            <mesh geometry={nodes.card.geome              <meshPhysicalMaterial map={materials.base.map} map-anisotropy={16} clearcoat={1} clearcoatRoughness={0.15} roughness={0.9} metalness={0.8} />/Html>
             </mesh>
             <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
             <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
