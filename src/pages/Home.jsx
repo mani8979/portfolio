@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from "framer-motion";
-import { FaGithub, FaInstagram, FaLinkedin, FaDownload, FaBriefcase, FaCode, FaCertificate, FaGlobe, FaArrowRight, FaCube } from 'react-icons/fa';
+import { FaGithub, FaInstagram, FaLinkedin, FaDownload, FaBriefcase, FaCode, FaGlobe, FaArrowRight, FaCube } from 'react-icons/fa';
 import Spline from '@splinetool/react-spline';
 import { AnimatedGradientTextDemo } from '../components/AnimatedGradientTextDemo';
 import GradientText from '../components/GradientText';
@@ -31,7 +31,6 @@ const Home = () => {
 
     const stats = [
         { icon: <FaCode />, value: "4+", title: "TOTAL PROJECTS", description: "Innovative web solutions crafted" },
-        { icon: <FaCertificate />, value: "2+", title: "YEARS OF EXPERIENCE", description: "Continuous learning journey" },
         { icon: <FaGlobe />, value: "10+", title: "AI PROJECTS", description: "AI automations and voice agents" },
     ];
 

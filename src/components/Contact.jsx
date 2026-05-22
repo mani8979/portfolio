@@ -313,8 +313,8 @@ const Contact = () => {
                     <FaPaperPlane className="text-white text-xl" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold dark:text-white text-slate-900">Hubungi Saya</h3>
-                    <p className="dark:text-slate-400 text-slate-600">Ada yang ingin didiskusikan? Kirim pesan ke saya!</p>
+                    <h3 className="text-2xl font-bold dark:text-white text-slate-900">Contact Me</h3>
+                    <p className="dark:text-slate-400 text-slate-600">Have something to discuss? Send me a message!</p>
                   </div>
                 </div>
 
@@ -324,7 +324,7 @@ const Contact = () => {
                       <FaUser className="absolute left-4 top-1/2 transform -translate-y-1/2 dark:text-slate-400 text-slate-400 group-focus-within:text-cyan-600 dark:group-focus-within:text-cyan-400 transition-colors duration-300" />
                       <input
                         type="text"
-                        placeholder="Nama Anda"
+                        placeholder="Your Name"
                         value={contactForm.name}
                         onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
                         className="w-full pl-12 pr-4 py-4 dark:bg-slate-800/50 bg-slate-50 border dark:border-slate-600/50 border-slate-200 rounded-xl dark:text-white text-slate-800 dark:placeholder-slate-400 placeholder-slate-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:focus:ring-cyan-400/20 transition-all duration-300"
@@ -338,7 +338,7 @@ const Contact = () => {
                       <FaEnvelope className="absolute left-4 top-1/2 transform -translate-y-1/2 dark:text-slate-400 text-slate-500 group-focus-within:text-cyan-400 transition-colors duration-300" />
                       <input
                         type="email"
-                        placeholder="Email Anda"
+                        placeholder="Your Email"
                         value={contactForm.email}
                         onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
                         className="w-full pl-12 pr-4 py-4 dark:bg-slate-800/50 bg-slate-50 border dark:border-slate-600/50 border-slate-200 rounded-xl dark:text-white text-slate-900 dark:placeholder-slate-400 placeholder-slate-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300"
@@ -351,7 +351,7 @@ const Contact = () => {
                     <div className="relative">
                       <FaComment className="absolute left-4 top-6 dark:text-slate-400 text-slate-500 group-focus-within:text-cyan-400 transition-colors duration-300" />
                       <textarea
-                        placeholder="Pesan Anda"
+                        placeholder="Your Message"
                         rows="4"
                         value={contactForm.message}
                         onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
@@ -373,7 +373,7 @@ const Contact = () => {
                     ) : (
                       <>
                         <FaPaperPlane />
-                        <span>Kirim Pesan</span>
+                        <span>Send Message</span>
                       </>
                     )}
                   </motion.button>

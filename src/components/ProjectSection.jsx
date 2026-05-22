@@ -20,45 +20,37 @@ import { supabase } from '../lib/supabase';
 // ===================================
 const dummyProjects = [
   {
-    title: "Portfolio v2",
-    description: "Website portofolio pribadi yang dibangun dengan React, Next.js, dan Tailwind CSS, di-deploy di Vercel.",
-    tech: ["Next.js", "React", "TailwindCSS", "Framer Motion"],
-    link: "https://github.com/username/portfolio",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
+    title: "House Studio Interiors",
+    description: "Web Application",
+    tech: ["Next.js", "React", "TailwindCSS"],
+    link: "https://housestudiointeriors.in/",
+    image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop",
     category: "Web/Apps",
   },
   {
-    title: "E-Commerce API",
-    description: "RESTful API untuk platform e-commerce dengan fitur otentikasi, manajemen produk, dan transaksi.",
-    tech: ["Node.js", "Express", "MongoDB", "JWT"],
-    link: "https://github.com/username/ecommerce-api",
-    image: "https://images.unsplash.com/photo-1522199755839-a2bacb67c546?q=80&w=2072&auto=format&fit=crop",
+    title: "Real Estate",
+    description: "Web Application",
+    tech: ["React", "Node.js", "MongoDB"],
+    link: "https://realstate-tan-beta.vercel.app/",
+    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2000&auto=format&fit=crop",
     category: "Web/Apps",
   },
   {
-    title: "UI Design System",
-    description: "Merancang komponen UI yang reusable dan konsisten untuk aplikasi web menggunakan Figma.",
-    tech: ["Figma", "Storybook"],
-    link: "#",
-    image: "https://images.unsplash.com/photo-1600132806378-62402124d9e0?q=80&w=2070&auto=format&fit=crop",
+    title: "Royal Frames",
+    description: "Web Application",
+    tech: ["Express"],
+    link: "https://royalframes.onrender.com/",
+    image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2000&auto=format&fit=crop",
     category: "Web/Apps",
   },
   {
-    title: "3D Product Visualization",
-    description: "Desain 3D interaktif untuk showcase produk menggunakan Spline dan Blender.",
+    title: "3D Design",
+    description: "Coming Soon",
     tech: ["Spline", "Blender"],
     link: "#",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2070&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop",
     category: "3D Design",
-  },
-  {
-    title: "Animated 3D Landing",
-    description: "Landing page dengan elemen 3D animasi untuk branding modern.",
-    tech: ["Spline", "Three.js"],
-    link: "#",
-    image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?q=80&w=2070&auto=format&fit=crop",
-    category: "3D Design",
-  },
+  }
 ];
 
 // ===================================
@@ -568,7 +560,6 @@ function ProjectSection() {
 
   const tabs = [
     { id: 'Projects', label: 'Projects', icon: <PiCodeBold className="text-[1.7em] mb-1" /> },
-    { id: 'Certificate', label: 'Certificates', icon: <LuBadge className="text-[1.5em] mb-1" /> },
     { id: 'Tech Stack', label: 'Tech Stack', icon: <LiaLayerGroupSolid className="text-[1.5em] mb-1" /> },
   ];
 
