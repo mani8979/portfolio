@@ -11,7 +11,9 @@ const path = require('path');
   const cardPage = await browser.newPage();
   await cardPage.setViewport({ width: 1080, height: 1080 });
   
-  const photoUrl = 'file:///d:/protfilo/IMG-20251024-WA0047.jpg';
+  const fs = require('fs');
+  const imageBuffer = fs.readFileSync('d:/protfilo/IMG-20251024-WA0047.jpg');
+  const photoBase64 = 'data:image/jpeg;base64,' + imageBuffer.toString('base64');
   
   const cardHtml = `
     <html>
@@ -30,7 +32,7 @@ const path = require('path');
            
            <!-- User Photo -->
            <div style="position: absolute; top: 150px; left: 50%; transform: translateX(-50%); width: 280px; height: 280px; border-radius: 50%; overflow: hidden; border: 6px solid #00ffdc; box-shadow: 0 0 40px rgba(0,255,220,0.5);">
-              <img src="${photoUrl}" style="width: 100%; height: 100%; object-fit: cover;" />
+              <img src="${photoBase64}" style="width: 100%; height: 100%; object-fit: cover;" />
            </div>
            
            <!-- Vertical decorative text on the right edge -->
