@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const path = require('path');
 
 (async () => {
@@ -11,7 +11,7 @@ const path = require('path');
   const cardPage = await browser.newPage();
   await cardPage.setViewport({ width: 1080, height: 1080 });
   
-  const photoUrl = 'file:///' + path.resolve(__dirname, 'src/assets/images/mani-babu.jpg').replace(/\\/g, '/');
+  const photoUrl = 'file:///d:/protfilo/IMG-20251024-WA0047.jpg';
   
   const cardHtml = `
     <html>
