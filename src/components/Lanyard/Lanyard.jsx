@@ -2,13 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
-import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei';
+import { useGLTF, useTexture, Environment, Lightformer, Html } from '@react-three/drei';
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from '@react-three/rapier';
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 import * as THREE from 'three';
 
 // 🧩 Ganti import glb menjadi path dari public/
 const cardGLB = '/models/card.glb';
+import maniImg from '../../assets/images/mani-babu.jpg';
 // 🧩 Tetap bisa pakai png dari src
 import lanyard from '../../assets/Lanyard/lanyard.png';
 
@@ -112,6 +113,57 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
         </RigidBody>
         <RigidBody position={[2, 0, 0]} ref={card} {...segmentProps} type={dragged ? 'kinematicPosition' : 'dynamic'}>
           <CuboidCollider args={[0.8, 1.125, 0.01]} />
+          
+          <Html 
+            transform 
+            position={[0, 0.1, 0.011]} 
+            rotation={[0, 0, 0]} 
+            scale={0.068} 
+            zIndexRange={[100, 0]}
+            occlude="blending"
+            pointerEvents="none"
+          >
+            <div className="w-[240px] h-[340px] bg-[#0c0c0c] rounded-xl flex flex-col items-center justify-between p-4 overflow-hidden relative shadow-2xl border border-gray-800">
+               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#00ffdc10] to-transparent pointer-events-none" />
+               <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-cyan-500/20 blur-3xl rounded-full" />
+               
+               <div className="w-full flex justify-start items-center gap-2 mb-2 z-10">
+                  <div className="w-6 h-6 bg-[#00ffdc] rounded flex items-center justify-center font-black text-black text-xs">M</div>
+                  <span className="text-white text-xs font-bold tracking-widest">PORTFOLIO</span>
+               </div>
+
+               <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-[#00ffdc] z-10 shadow-[0_0_15px_rgba(0,255,220,0.4)]">
+                  <img src={maniImg} alt="Mani Babu" className="w-full h-full object-cover" />
+               </div>
+
+               <div className="absolute right-0 top-1/2 -translate-y-1/2 rotate-90 opacity-10 pointer-events-none z-0">
+                  <span className="text-5xl font-black text-white tracking-widest uppercase">MANI</span>
+               </div>
+
+               <div className="w-full bg-white rounded-lg p-3 text-center z-10 mt-4 shadow-lg flex flex-col items-center">
+                  <h2 className="text-black font-black text-sm uppercase tracking-wide">Kalla Mani Babu</h2>
+                  <div className="bg-black text-[#00ffdc] text-[10px] py-1 px-2 rounded-full mt-1 font-bold inline-block">
+                     FULL STACK DEV
+                  </div>
+               </div>
+            </div>
+          </Html>
+
+          <Html 
+            transform 
+            position={[0, 0.1, -0.011]} 
+            rotation={[0, Math.PI, 0]} 
+            scale={0.068} 
+            zIndexRange={[100, 0]}
+            occlude="blending"
+            pointerEvents="none"
+          >
+            <div className="w-[240px] h-[340px] bg-[#0c0c0c] rounded-xl flex flex-col items-center justify-center p-4 overflow-hidden relative shadow-2xl border border-gray-800">
+               <div className="w-12 h-12 bg-[#00ffdc] rounded flex items-center justify-center font-black text-black text-2xl mb-4">M</div>
+               <span className="text-white text-lg font-bold tracking-widest">PORTFOLIO</span>
+               <span className="text-gray-500 text-xs mt-2 text-center">kallamanibabu.me</span>
+            </div>
+          </Html>
           <group
             scale={2.25}
             position={[0, -1.2, -0.05]}
@@ -120,7 +172,7 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
             onPointerUp={(e) => (e.target.releasePointerCapture(e.pointerId), drag(false))}
             onPointerDown={(e) => (e.target.setPointerCapture(e.pointerId), drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation()))))}>
             <mesh geometry={nodes.card.geometry}>
-              <meshPhysicalMaterial map={materials.base.map} map-anisotropy={16} clearcoat={1} clearcoatRoughness={0.15} roughness={0.9} metalness={0.8} />
+              <meshPhysicalMaterial color="#111111" clearcoat={1} clearcoatRoughness={0.15} roughness={0.9} metalness={0.8} />
             </mesh>
             <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
             <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
