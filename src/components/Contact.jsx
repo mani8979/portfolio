@@ -31,59 +31,10 @@ const Contact = () => {
   });
   const [isSubmittingContact, setIsSubmittingContact] = useState(false);
 
-  // States untuk comments
-  const [commentForm, setCommentForm] = useState({
-    name: '',
-    message: '',
-    photo: null,
-    photoPreview: null
-  });
-  const [comments, setComments] = useState([]);
-  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   const { isAuthenticated } = useAdmin();
-
-  // Load comments dari Supabase
-  useEffect(() => {
-    fetchComments();
-  }, []);
-
-  // Fetch comments dari database
-  const fetchComments = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('comments')
-        .select('*')
-        .order('is_pinned', { ascending: false })  // Pinned comments first
-        .order('created_at', { ascending: false }); // Then by date
-
-      if (error) throw error;
-
-      if (data) {
-        console.log('✅ Comments fetched from database:', data.length);
-        // Transform data dari Supabase ke format yang dipakai component
-        const transformedComments = data.map(comment => ({
-          id: comment.id,
-          name: comment.name,
-          message: comment.message,
-          photo: comment.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.name)}&background=00ffdc&color=000754&size=100`,
-          timestamp: comment.created_at,
-          likes: comment.likes || 0,
-          isPinned: comment.is_pinned || false  // ✨ NEW: Pin status
-        }));
-        setComments(transformedComments);
-      }
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-      // Fallback ke localStorage jika gagal
-      const savedComments = localStorage.getItem('portfolioComments');
-      if (savedComments) {
-        setComments(JSON.parse(savedComments));
-      }
-    }
-  };
 
   // Handle contact form
   const handleContactSubmit = async (e) => {
@@ -91,129 +42,39 @@ const Contact = () => {
     setIsSubmittingContact(true);
 
     try {
-      // Save message to Supabase
-      const { data, error } = await supabase
-        .from('contact_messages')
-        .insert([
-          {
-            name: contactForm.name,
-            email: contactForm.email,
-            message: contactForm.message,
-            status: 'unread'
-          }
-        ])
-        .select();
+      const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+      const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
 
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
+      if (!botToken || !chatId) {
+        throw new Error("Telegram bot token or chat ID is not configured.");
       }
 
-      console.log('Message saved to database:', data);
+      const text = `📬 *New Message from Portfolio!*\n\n*Name:* ${contactForm.name}\n*Email:* ${contactForm.email}\n*Message:*\n${contactForm.message}`;
 
-      alert('Pesan berhasil dikirim! Terima kasih telah menghubungi saya. 📧');
+      const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: text,
+          parse_mode: 'Markdown',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message to Telegram');
+      }
+
+      alert('Message sent successfully! Thank you for contacting me. 📧');
       setContactForm({ name: '', email: '', message: '' });
 
     } catch (error) {
       console.error('Error submitting contact form:', error);
-      alert(`Gagal mengirim pesan: ${error.message}. Pastikan koneksi database aktif.`);
+      alert(`Failed to send message: ${error.message}. Please configure your Telegram bot credentials.`);
     } finally {
       setIsSubmittingContact(false);
-    }
-  };
-
-  // Handle photo upload
-  const handlePhotoUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setCommentForm(prev => ({
-          ...prev,
-          photo: file,
-          photoPreview: reader.result
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Handle comment submit
-  const handleCommentSubmit = async (e) => {
-    e.preventDefault();
-    if (!commentForm.name.trim() || !commentForm.message.trim()) return;
-
-    setIsSubmittingComment(true);
-
-    try {
-      // Save comment to Supabase
-      const { data, error } = await supabase
-        .from('comments')
-        .insert([
-          {
-            name: commentForm.name,
-            message: commentForm.message,
-            photo_url: commentForm.photoPreview || null,
-            likes: 0
-          }
-        ])
-        .select();
-
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
-      }
-
-      console.log('Comment saved to database:', data);
-
-      // Refresh comments list dari database
-      await fetchComments();
-
-      // Reset form
-      setCommentForm({ name: '', message: '', photo: null, photoPreview: null });
-
-      // Show success message
-      alert('Comment berhasil dipost! 🎉');
-
-    } catch (error) {
-      console.error('Error submitting comment:', error);
-      alert(`Gagal posting comment: ${error.message}. Pastikan koneksi database aktif.`);
-    } finally {
-      setIsSubmittingComment(false);
-    }
-  };
-
-  // Handle like comment
-  const handleLikeComment = async (commentId) => {
-    try {
-      // Find current comment
-      const comment = comments.find(c => c.id === commentId);
-      if (!comment) return;
-
-      // Update likes in Supabase
-      const { error } = await supabase
-        .from('comments')
-        .update({ likes: comment.likes + 1 })
-        .eq('id', commentId);
-
-      if (error) {
-        console.error('Supabase error:', error);
-        throw error;
-      }
-
-      console.log('Like updated in database');
-
-      // Update local state untuk tampilan langsung
-      const updatedComments = comments.map(c =>
-        c.id === commentId
-          ? { ...c, likes: c.likes + 1 }
-          : c
-      );
-      setComments(updatedComments);
-
-    } catch (error) {
-      console.error('Error liking comment:', error);
-      alert(`Gagal like comment: ${error.message}`);
     }
   };
 
@@ -295,7 +156,7 @@ const Contact = () => {
           </button>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <div className="max-w-3xl mx-auto">
           {/* Left Side - Contact Form & Social */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -420,173 +281,6 @@ const Contact = () => {
                     </motion.a>
                   ))}
                 </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right Side - Comments System */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="space-y-8"
-          >
-            {/* Comment Form Panel */}
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-1000 hidden dark:block"></div>
-              <div className="relative dark:bg-slate-900/80 bg-white backdrop-blur-xl rounded-3xl p-8 border dark:border-slate-700/50 border-slate-100 dark:shadow-none shadow-xl">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 dark:bg-gradient-to-r dark:from-emerald-600 dark:to-blue-600 bg-cyan-600 rounded-full">
-                    <FaComment className="text-white text-xl" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-bold dark:text-white text-slate-900">Leave a Comment</h3>
-                    <p className="dark:text-slate-400 text-slate-600">Share your thoughts!</p>
-                  </div>
-                </div>
-
-                <form onSubmit={handleCommentSubmit} className="space-y-6">
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="relative">
-                        <div className="w-16 h-16 rounded-full bg-slate-700 border-2 border-slate-600 overflow-hidden">
-                          {commentForm.photoPreview ? (
-                            <img src={commentForm.photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-slate-400">
-                              <FaCamera />
-                            </div>
-                          )}
-                        </div>
-                        <label className="absolute -bottom-2 -right-2 bg-cyan-600 text-white p-2 rounded-full cursor-pointer hover:bg-cyan-500 transition-colors duration-300">
-                          <FaCamera className="text-sm" />
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handlePhotoUpload}
-                            className="hidden"
-                          />
-                        </label>
-                      </div>
-                    </div>
-                    <div className="flex-1 space-y-4">
-                      <input
-                        type="text"
-                        placeholder="Your Name"
-                        value={commentForm.name}
-                        onChange={(e) => setCommentForm(prev => ({ ...prev, name: e.target.value }))}
-                        className="w-full px-4 py-3 dark:bg-slate-800/50 bg-slate-50 border dark:border-slate-600/50 border-slate-200 rounded-xl dark:text-white text-slate-900 dark:placeholder-slate-400 placeholder-slate-500 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 transition-all duration-300"
-                        required
-                      />
-                      <textarea
-                        placeholder="Write your comment..."
-                        rows="3"
-                        value={commentForm.message}
-                        onChange={(e) => setCommentForm(prev => ({ ...prev, message: e.target.value }))}
-                        className="w-full px-4 py-3 dark:bg-slate-800/50 bg-slate-50 border dark:border-slate-600/50 border-slate-200 rounded-xl dark:text-white text-slate-900 dark:placeholder-slate-400 placeholder-slate-500 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 transition-all duration-300 resize-none"
-                        required
-                      ></textarea>
-                    </div>
-                  </div>
-
-                  <motion.button
-                    type="submit"
-                    disabled={isSubmittingComment}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full dark:bg-gradient-to-r dark:from-emerald-600 dark:to-blue-600 dark:hover:from-emerald-500 dark:hover:to-blue-500 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-cyan-500/25 disabled:opacity-50"
-                  >
-                    {isSubmittingComment ? (
-                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    ) : (
-                      <>
-                        <FaComment />
-                        <span>Post Comment</span>
-                      </>
-                    )}
-                  </motion.button>
-                </form>
-              </div>
-            </div>
-
-            {/* Comments Display */}
-            <div className="space-y-4">
-              <h4 className="text-xl font-bold dark:text-white text-slate-900 flex items-center gap-2">
-                <FaComment className="text-cyan-400" />
-                Comments ({comments.length})
-              </h4>
-
-              <div className="relative">
-                <div className="space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar pb-20 pr-2">
-                  <AnimatePresence>
-                    {comments.map((comment, index) => (
-                      <motion.div
-                        key={comment.id}
-                        initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9, x: -100 }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        className={`group relative backdrop-blur-sm rounded-2xl p-6 border transition-all duration-300 ${comment.isPinned
-                          ? 'bg-gradient-to-br from-cyan-900/30 to-blue-900/30 border-cyan-400/50 shadow-lg shadow-cyan-500/10'
-                          : 'dark:bg-slate-800/50 bg-white border-slate-200 dark:border-slate-700/30 hover:border-cyan-400/30 shadow-sm'
-                          }`}
-                      >
-                        {/* 📌 Pin Indicator */}
-                        {comment.isPinned && (
-                          <div className="absolute top-3 right-3 flex items-center gap-2 bg-cyan-500/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-cyan-400/30">
-                            <FaThumbtack className="w-4 h-4 text-cyan-400" />
-                            <span className="text-xs font-semibold text-cyan-300">Pinned</span>
-                          </div>
-                        )}
-
-                        <div className="flex gap-4">
-                          <img
-                            src={comment.photo}
-                            alt={comment.name}
-                            className="w-12 h-12 rounded-full object-cover border-2 border-slate-600"
-                          />
-                          <div className="flex-1">
-                            <div className="flex items-start justify-between">
-                              <div>
-                                <h5 className="font-semibold dark:text-white text-slate-900">{comment.name}</h5>
-                                <p className="text-xs dark:text-slate-400 text-slate-500">
-                                  {new Date(comment.timestamp).toLocaleDateString('id-ID', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                  })}
-                                </p>
-                              </div>
-                            </div>
-                            <p className="dark:text-slate-300 text-slate-600 mt-2 leading-relaxed">{comment.message}</p>
-                            <div className="flex items-center gap-4 mt-4">
-                              <button
-                                onClick={() => handleLikeComment(comment.id)}
-                                className="flex items-center gap-2 text-slate-400 hover:text-red-400 transition-colors duration-300 group/like"
-                              >
-                                <FaHeart className="group-hover/like:scale-110 transition-transform duration-300" />
-                                <span className="text-sm">{comment.likes}</span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-
-                  {comments.length === 0 && (
-                    <div className="text-center py-12 text-slate-400">
-                      <FaComment className="text-4xl mx-auto mb-4 opacity-50" />
-                      <p>Belum ada komentar. Jadilah yang pertama!</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* ✨ Gradient Fade Effect */}
-                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t dark:from-[#0f172a] from-zinc-50 via-zinc-50/60 dark:via-[#0f172a]/60 to-transparent pointer-events-none z-10 rounded-b-2xl" />
               </div>
             </div>
           </motion.div>
