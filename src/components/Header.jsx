@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { FaShieldAlt, FaSun, FaMoon } from 'react-icons/fa';
-import bangzenLogo from '../assets/images/BGZENBGIJObulat.png';
+import bangzenLogo from '../assets/images/logo.svg';
 import { useNavbar } from '../contexts/NavbarContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAdmin } from '../contexts/AdminContext';

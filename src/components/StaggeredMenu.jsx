@@ -10,7 +10,7 @@ export const StaggeredMenu = ({
     displaySocials = true,
     displayItemNumbering = true,
     className,
-    logoUrl = '/src/assets/images/BGZENBGIJObulat.png', // Use site logo default
+    logoUrl = '/src/assets/images/logo.svg', // Use site logo default
     menuButtonColor = '#fff',
     openMenuButtonColor = '#fff',
     changeMenuColorOnOpen = true,
