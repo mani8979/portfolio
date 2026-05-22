@@ -7,13 +7,17 @@ import {
   FaPaperPlane,
   FaUser,
   FaEnvelope,
+  FaPaperPlane,
+  FaUser,
+  FaEnvelope,
   FaComment,
   FaCamera,
   FaHeart,
   FaReply,
   FaTrash,
   FaCog,
-  FaThumbtack
+  FaThumbtack,
+  FaWhatsapp
 } from 'react-icons/fa';
 import { SiTiktok } from 'react-icons/si';
 import AdminDashboard from './AdminDashboard';
@@ -238,6 +242,13 @@ const Contact = () => {
       url: 'https://www.linkedin.com/in/kalla-mani-babu-b6664a366/',
       color: 'from-blue-600 to-blue-800',
       hoverColor: 'hover:shadow-blue-500/25'
+    },
+    {
+      name: 'WhatsApp',
+      icon: <FaWhatsapp />,
+      url: 'https://wa.me/919581108448',
+      color: 'from-green-500 to-emerald-600',
+      hoverColor: 'hover:shadow-green-500/25'
     }
   ];
 
