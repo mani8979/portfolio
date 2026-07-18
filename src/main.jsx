@@ -6,6 +6,24 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import Preloader from './components/Preloader.jsx';
 import './index.css';
 
+// Hide Spline Logo inside Shadow DOM dynamically
+if (typeof window !== 'undefined') {
+  setInterval(() => {
+    const splineViewers = document.querySelectorAll('spline-viewer');
+    splineViewers.forEach(viewer => {
+      if (viewer.shadowRoot) {
+        const logo = viewer.shadowRoot.getElementById('logo');
+        if (logo) {
+          logo.style.display = 'none';
+          logo.style.visibility = 'hidden';
+          logo.style.opacity = '0';
+          logo.style.pointerEvents = 'none';
+        }
+      }
+    });
+  }, 300);
+}
+
 const Main = () => {
   const [isLoading, setIsLoading] = useState(true);
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
 import { FaGithub, FaInstagram, FaLinkedin, FaDownload, FaBriefcase, FaCode, FaGlobe, FaArrowRight, FaCube } from 'react-icons/fa';
 import Spline from '@splinetool/react-spline';
@@ -12,9 +12,31 @@ import { ButtonMovingBorder } from '../components/MovingBorderButton';
 import ProjectSection from '../components/ProjectSection';
 import Contact from '../components/Contact';
 import { useTheme } from '../contexts/ThemeContext';
+import { supabase } from '../lib/supabase';
 
 const Home = () => {
     const { theme } = useTheme();
+    const [cvUrl, setCvUrl] = useState('/cv.pdf');
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                if (supabase) {
+                    const { data, error } = await supabase
+                        .from('settings')
+                        .select('cv_url')
+                        .eq('id', 1)
+                        .single();
+                    if (data && data.cv_url) {
+                        setCvUrl(data.cv_url);
+                    }
+                }
+            } catch (err) {
+                console.error('Error fetching CV settings:', err);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     const [is3dEnabled, setIs3dEnabled] = useState(() => {
         if (typeof window !== 'undefined') {
@@ -31,7 +53,6 @@ const Home = () => {
 
     const stats = [
         { icon: <FaCode />, value: "4+", title: "TOTAL PROJECTS", description: "Innovative web solutions crafted" },
-        { icon: <FaGlobe />, value: "10+", title: "AI PROJECTS", description: "AI automations and voice agents" },
     ];
 
     return (
@@ -160,7 +181,7 @@ const Home = () => {
                             "Whoever strives shall succeed."
                         </div>
                         <div className="flex flex-row sm:flex-row gap-4 mt-8 justify-center md:justify-start items-center">
-                            <ButtonMovingBorder as="a" href="/cv.pdf" download duration={3000} borderRadius="0.75rem" className="dark:bg-slate-900/[0.8] bg-white border dark:border-slate-800 border-slate-200 dark:text-white text-slate-800 font-semibold flex items-center justify-center gap-2 transition-all duration-300 dark:shadow-none shadow-md hover:shadow-lg dark:hover:shadow-[0_0_24px_8px_#40ffaa]">
+                            <ButtonMovingBorder as="a" href={cvUrl} download target="_blank" duration={3000} borderRadius="0.75rem" className="dark:bg-slate-900/[0.8] bg-white border dark:border-slate-800 border-slate-200 dark:text-white text-slate-800 font-semibold flex items-center justify-center gap-2 transition-all duration-300 dark:shadow-none shadow-md hover:shadow-lg dark:hover:shadow-[0_0_24px_8px_#40ffaa]">
                                 <FaDownload /> Download CV
                             </ButtonMovingBorder>
                             <ButtonMovingBorder as="a" href="#projects" duration={3000} borderRadius="0.75rem" className="dark:bg-slate-900/[0.8] bg-white border dark:border-slate-800 border-slate-200 dark:text-white text-slate-800 font-semibold flex items-center justify-center gap-2 transition-all duration-300 dark:shadow-none shadow-md hover:shadow-lg dark:hover:shadow-[0_0_24px_8px_#40ffaa]">
@@ -170,7 +191,7 @@ const Home = () => {
                     </motion.div>
                 </div>
 
-                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }} className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mt-10 px-4 md:px-0">
+                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }} className={`grid grid-cols-1 ${stats.length === 1 ? 'md:grid-cols-1 max-w-md' : stats.length === 2 ? 'md:grid-cols-2 max-w-3xl' : 'md:grid-cols-3 max-w-5xl'} gap-8 mx-auto mt-10 px-4 md:px-0`}>
                     {stats.map((stat, index) => (
                         <div key={index} className="group relative p-6 rounded-2xl dark:bg-slate-900/90 bg-white border dark:border-slate-700/50 border-slate-200 dark:shadow-none shadow-lg transition-all duration-300 hover:border-cyan-400/50 hover:shadow-xl dark:hover:shadow-[0_0_24px_0px_#00ffdc50] cursor-pointer">
                             <div className="flex justify-between items-start">

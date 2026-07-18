@@ -19,9 +19,11 @@ import {
   FaImage,
   FaTags,
   FaStar,
-  FaThumbtack
+  FaThumbtack,
+  FaCog
 } from 'react-icons/fa';
 import { supabase } from '../lib/supabase';
+import { uploadToCloudinary } from '../lib/cloudinary';
 
 const AdminDashboard = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('projects');
@@ -33,6 +35,9 @@ const AdminDashboard = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
+  const contentRef = React.useRef(null);
+  const [cvUrl, setCvUrl] = useState('');
+  const [uploadingCv, setUploadingCv] = useState(false);
 
   // Form states
   const [projectForm, setProjectForm] = useState({
@@ -95,6 +100,9 @@ const AdminDashboard = ({ isOpen, onClose }) => {
         case 'gallery':
           await fetchGallery();
           break;
+        case 'settings':
+          await fetchSettings();
+          break;
         default:
           break;
       }
@@ -151,6 +159,49 @@ const AdminDashboard = ({ isOpen, onClose }) => {
     if (error) console.error('Error fetching comments:', error);
   };
 
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('cv_url')
+        .eq('id', 1)
+        .single();
+      if (data) setCvUrl(data.cv_url);
+      if (error) console.error('Error fetching settings:', error);
+    } catch (err) {
+      console.error('Error fetching settings:', err);
+    }
+  };
+
+  const handleCvUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.type !== 'application/pdf') {
+      alert('Please upload a PDF file');
+      return;
+    }
+
+    try {
+      setUploadingCv(true);
+      const uploadedUrl = await uploadFile(file, 'portfolio-assets', 'cv/');
+      
+      const { error } = await supabase
+        .from('settings')
+        .update({ cv_url: uploadedUrl })
+        .eq('id', 1);
+
+      if (error) throw error;
+
+      setCvUrl(uploadedUrl);
+      alert('CV uploaded successfully!');
+    } catch (err) {
+      alert('Failed to upload CV: ' + err.message);
+    } finally {
+      setUploadingCv(false);
+    }
+  };
+
   // FILE UPLOAD Functions
   const uploadFile = async (file, bucket, folder = '') => {
     try {
@@ -160,23 +211,48 @@ const AdminDashboard = ({ isOpen, onClose }) => {
       const fileExt = file.name.split('.').pop();
       const fileName = `${folder}${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-      // Upload to Supabase Storage
-      const { data, error } = await supabase.storage
-        .from(bucket)
-        .upload(fileName, file, {
-          cacheControl: '3600',
-          upsert: false
-        });
+      let supabaseUrl = '';
+      let cloudinaryUrl = '';
 
-      if (error) throw error;
+      // 1. Upload to Supabase Storage (backup)
+      try {
+        const { data, error } = await supabase.storage
+          .from(bucket)
+          .upload(fileName, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(fileName);
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from(bucket)
+          .getPublicUrl(fileName);
+
+        supabaseUrl = publicUrl;
+      } catch (sbError) {
+        console.warn('Supabase storage upload failed:', sbError);
+      }
+
+      // 2. Upload to Cloudinary (primary)
+      try {
+        const cleanFolder = folder ? folder.replace(/\/$/, '') : 'portfolio';
+        cloudinaryUrl = await uploadToCloudinary(file, cleanFolder);
+      } catch (clError) {
+        console.warn('Cloudinary upload failed:', clError);
+      }
 
       setUploadingFile(false);
-      return publicUrl;
+
+      if (cloudinaryUrl) {
+        console.log('✅ Uploaded to Cloudinary successfully:', cloudinaryUrl);
+        return cloudinaryUrl;
+      } else if (supabaseUrl) {
+        console.log('✅ Uploaded to Supabase successfully (fallback):', supabaseUrl);
+        return supabaseUrl;
+      } else {
+        throw new Error('Both Cloudinary and Supabase uploads failed.');
+      }
     } catch (error) {
       setUploadingFile(false);
       console.error('Error uploading file:', error);
@@ -598,6 +674,9 @@ const AdminDashboard = ({ isOpen, onClose }) => {
 
   const startEdit = (item, type) => {
     setEditingItem({ ...item, type });
+    if (contentRef.current) {
+      contentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     if (type === 'project') {
       setProjectForm({
         title: item.title,
@@ -632,7 +711,8 @@ const AdminDashboard = ({ isOpen, onClose }) => {
     { id: 'certificates', label: 'Certificates', icon: <FaCertificate />, count: certificates.length },
     { id: 'gallery', label: 'Gallery', icon: <FaImage />, count: gallery.length },
     { id: 'messages', label: 'Messages', icon: <FaEnvelope />, count: messages.length },
-    { id: 'comments', label: 'Comments', icon: <FaComments />, count: comments.length }
+    { id: 'comments', label: 'Comments', icon: <FaComments />, count: comments.length },
+    { id: 'settings', label: 'Settings', icon: <FaCog /> }
   ];
 
   if (!isOpen) return null;
@@ -690,7 +770,7 @@ const AdminDashboard = ({ isOpen, onClose }) => {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div ref={contentRef} className="flex-1 overflow-y-auto p-6">
             {loading ? (
               <div className="flex items-center justify-center h-64">
                 <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
@@ -706,6 +786,9 @@ const AdminDashboard = ({ isOpen, onClose }) => {
                         onClick={() => {
                           setIsCreating(true);
                           resetProjectForm();
+                          if (contentRef.current) {
+                            contentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                          }
                         }}
                         className="w-full bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3"
                       >
@@ -897,6 +980,9 @@ const AdminDashboard = ({ isOpen, onClose }) => {
                         onClick={() => {
                           setIsCreating(true);
                           resetGalleryForm();
+                          if (contentRef.current) {
+                            contentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                          }
                         }}
                         className="w-full bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3"
                       >
@@ -1091,6 +1177,9 @@ const AdminDashboard = ({ isOpen, onClose }) => {
                         onClick={() => {
                           setIsCreating(true);
                           resetCertificateForm();
+                          if (contentRef.current) {
+                            contentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                          }
                         }}
                         className="w-full bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3"
                       >
@@ -1366,6 +1455,43 @@ const AdminDashboard = ({ isOpen, onClose }) => {
                         <p>No comments yet</p>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* Settings Tab */}
+                {activeTab === 'settings' && (
+                  <div className="space-y-6">
+                    <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
+                      <h3 className="text-2xl font-bold text-white mb-6">Portfolio Settings</h3>
+                      <div className="space-y-6">
+                        <div>
+                          <label className="block text-slate-400 mb-2 font-semibold">Upload CV / Resume (PDF)</label>
+                          <p className="text-slate-500 text-xs mb-3">Upload your latest resume. It will be saved to Cloudinary and Supabase, and updated live on the homepage download link.</p>
+                          <div className="space-y-3">
+                            <input
+                              type="file"
+                              accept="application/pdf"
+                              onChange={handleCvUpload}
+                              className="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-xl text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-cyan-600 file:text-white hover:file:bg-cyan-500 file:cursor-pointer"
+                            />
+                            {cvUrl && (
+                              <div className="flex items-center gap-2 p-3 bg-slate-900/60 rounded-xl border border-slate-700/50 mt-2">
+                                <span className="text-sm font-semibold text-slate-400">Current CV Link:</span>
+                                <a href={cvUrl} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline text-sm break-all font-mono">
+                                  {cvUrl}
+                                </a>
+                              </div>
+                            )}
+                            {uploadingCv && (
+                              <div className="flex items-center gap-2 text-sm text-cyan-400 mt-2">
+                                <div className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                                <span>Uploading CV to Cloudinary & Supabase...</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </>
