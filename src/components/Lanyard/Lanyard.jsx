@@ -48,6 +48,10 @@ function Band({ maxSpeed = 50, minSpeed = 0 }) {
   const texture = useTexture(lanyard);
   const cardTexture = useTexture(cardTextureFile);
   cardTexture.flipY = false;
+  cardTexture.wrapS = THREE.ClampToEdgeWrapping;
+  cardTexture.wrapT = THREE.ClampToEdgeWrapping;
+  cardTexture.repeat.set(1, 0.7111);
+  cardTexture.offset.set(0, 0.1444);
   
   const [curve] = useState(() => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]));
   const [dragged, drag] = useState(false);
