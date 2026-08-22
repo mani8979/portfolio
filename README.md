@@ -1,12 +1,12 @@
-# PROJEK PORTFOLIO ZAIN AHMAD FAHREZI
+# Portfolio Project - Kalla Mani Babu
 
-Ini adalah proyek React yang dikembangkan menggunakan Vite — sebuah build tool modern dengan performa tinggi, dukungan Hot Module Replacement (HMR), dan waktu pengembangan yang cepat. Proyek ini menampilkan portfolio interaktif dengan elemen 3D dan animasi yang halus.
+This is a modern React project developed using Vite — a high-performance build tool with Hot Module Replacement (HMR) support and fast development times. This project features an interactive portfolio with 3D elements and smooth animations.
 
-> ⚠️ Proyek ini masih dalam **tahap pengembangan aktif**. Mohon tidak menyalin, menjiplak, atau mendistribusikan ulang sebagian atau seluruh isi proyek ini **tanpa mencantumkan sumber atau izin dari pembuat.**
+> ⚠️ This project is in **active development**. Please do not copy or redistribute the contents of this project **without proper attribution to the creator.**
 
 ---
 
-## 📆 Teknologi yang Digunakan
+## 📆 Technologies Used
 
 ### Core & Frontend
 * ⚛️ [React](https://react.dev/)
@@ -17,20 +17,20 @@ Ini adalah proyek React yang dikembangkan menggunakan Vite — sebuah build tool
 ### Backend & Database
 * 🔥 [Supabase](https://supabase.com/)
 
-### Animasi & 3D
+### Animations & 3D
 * 🧊 [Three.js](https://threejs.org/) & [React Three Fiber](https://docs.pmnd.rs/react-three-fiber)
 * 🎬 [Framer Motion](https://www.framer.com/motion/)
 * 🎭 [GSAP](https://greensock.com/gsap/)
 
 ---
 
-## 🛠️ Cara Menjalankan Proyek Ini
+## 🛠️ How to Run This Project
 
-1. **Clone repositori ini:**
+1. **Clone this repository:**
 
    ```bash
-   git clone https://github.com/username/zain-portofolio.git
-   cd zain-portofolio
+   git clone https://github.com/mani8979/portfolio.git
+   cd portfolio
    ```
 
 2. **Install dependencies:**
@@ -39,23 +39,23 @@ Ini adalah proyek React yang dikembangkan menggunakan Vite — sebuah build tool
    npm install
    ```
 
-3. **Konfigurasi Environment:**
+3. **Environment Configuration:**
 
-   Salin file `.env.example` menjadi `.env`:
+   Copy the `.env.example` file to `.env.local`:
    ```bash
-   cp .env.example .env
+   cp .env.example .env.local
    ```
-   *Pastikan variabel environment untuk Supabase sudah terisi dengan benar.*
+   *Make sure the environment variables for Supabase and other services are properly filled out.*
 
-4. **Jalankan project secara lokal:**
+4. **Run the project locally:**
 
    ```bash
    npm run dev
    ```
 
-   Setelah itu buka browser ke: [http://localhost:5173](http://localhost:5173)
+   Then open your browser to: [http://localhost:5173](http://localhost:5173)
 
-5. **Build untuk produksi (opsional):**
+5. **Build for production (optional):**
 
    ```bash
    npm run build
@@ -63,36 +63,25 @@ Ini adalah proyek React yang dikembangkan menggunakan Vite — sebuah build tool
 
 ---
 
-## ❗ Hak Cipta & Lisensi
+## ❗ Copyright & License
 
-Proyek ini adalah karya asli milik **Zain Ahmad Fahrezi** dan hanya diperbolehkan untuk digunakan sebagai referensi pribadi.
+This project is the original work of **Kalla Mani Babu** and is intended to be used as a personal reference.
 
-🚫 **Dilarang keras menjiplak, mengupload ulang, atau menggunakan sebagian/keseluruhan kode tanpa mencantumkan sumber atau tanpa izin.**
+🚫 **Plagiarism, re-uploading, or using parts/all of the code without providing credit or obtaining permission is strictly prohibited.**
 
-📄 Untuk informasi lisensi atau kerja sama, silakan hubungi saya langsung melalui GitHub.
-
----
-
-## 📌 Catatan Tambahan
-
-Jika kamu ingin mengembangkan proyek ini lebih lanjut atau menggunakan sebagian ide/kodenya, **wajib mencantumkan sumber dengan link ke repositori ini**.
-
-Terima kasih sudah menghargai karya pengembang! 🙏
+📄 For license information or collaboration, please contact me directly via GitHub or LinkedIn.
 
 ---
 
-## 💖 Dukung Pengembang
+## 📌 Additional Notes
 
-Jika kamu merasa proyek ini bermanfaat dan ingin memberikan dukungan:
+If you want to further develop this project or use some of its ideas/code, **you must include the source with a link to this repository**.
 
-* 💳 **Dana:** 0896-0433-2830
-* 🏦 **Rekening BRI:** 0342 0107 8321 503 a.n. Zain Ahmad Fahrezi
-* 🅿️ **PayPal:** [paypal.me/zainahmadfahrezi](https://paypal.me/zainahmadfahrezi)
+Thank you for respecting developers' work! 🙏
 
-Setiap dukungan sangat berarti dan membantu saya untuk terus mengembangkan proyek-proyek open source lainnya. Terima kasih! 🙌
+---
 
-## 🌐 Sosial Media
+## 🌐 Social Media
 
-* 💼 [LinkedIn](https://www.linkedin.com/in/zainahmadfahrezi)
-* 📸 Instagram: [@zain.ahmadf](https://www.instagram.com/zain.ahmadf)
-* 🎥 TikTok: [@zainahmad.f](https://www.tiktok.com/@zainahmad.f)
+* 💼 [LinkedIn](https://www.linkedin.com/in/kallamanibabu)
+* 🐙 [GitHub](https://github.com/mani8979)
